@@ -1,0 +1,6 @@
+Value ACCESS_LIST (\S+)
+Value INTERFACE (\S+)
+
+
+Start
+  ^access-group ${ACCESS_LIST} in interface ${INTERFACE} -> Record
