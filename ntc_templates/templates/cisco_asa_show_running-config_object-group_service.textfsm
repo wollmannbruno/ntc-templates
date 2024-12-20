@@ -1,0 +1,36 @@
+Value Filldown NAME (\S+)
+Value Filldown DESCRIPTION (.+)
+Value Filldown PROTOCOL (\S+)
+Value ENTRY_TYPE (service|group|port)
+Value ENTRY_NAME (\S+)
+Value ENTRY_ICMP_PROT (icmp)
+Value ENTRY_ICMP_TYPE (.*)
+Value ENTRY_PROT ([\w\-]+)
+Value ENTRY_SRC_PORT_EQ (\S+)
+Value ENTRY_SRC_PORT_GT (\S+)
+Value ENTRY_SRC_PORT_LT (\S+)
+Value ENTRY_SRC_PORT_START (\S+)
+Value ENTRY_SRC_PORT_END (\S+)
+Value ENTRY_DST_PORT_EQ (\S+)
+Value ENTRY_DST_PORT_GT (\S+)
+Value ENTRY_DST_PORT_LT (\S+)
+Value ENTRY_DST_PORT_START (\S+)
+Value ENTRY_DST_PORT_END (\S+)
+Value ENTRY_GRP_NAME (\S+)
+Value ENTRY_PORT_EQ (\S+)
+Value ENTRY_PORT_START (\S+)
+Value ENTRY_PORT_END (\S+)
+
+Start
+  ^object-group -> Continue.Clearall
+  ^object-group\s+service\s+${NAME}(\s+${PROTOCOL})?\s*
+  ^\s+description:?\s+${DESCRIPTION}\s*
+  ^\s+${ENTRY_TYPE}-object\s+object(\s+${ENTRY_NAME})\s* -> Record
+  ^\s+${ENTRY_TYPE}-object\s+${ENTRY_ICMP_PROT}(\s+${ENTRY_ICMP_TYPE})?\s* -> Record
+  ^\s+${ENTRY_TYPE}-object\s+${ENTRY_PROT}\s+source\s+(eq\s+${ENTRY_SRC_PORT_EQ}|gt\s+${ENTRY_SRC_PORT_GT}|lt\s+${ENTRY_SRC_PORT_LT}|range\s+${ENTRY_SRC_PORT_START}\s+${ENTRY_SRC_PORT_END})\s+destination\s+(eq\s+${ENTRY_DST_PORT_EQ}|gt\s+${ENTRY_DST_PORT_GT}|lt\s+${ENTRY_DST_PORT_LT}|range\s+${ENTRY_DST_PORT_START}\s+${ENTRY_DST_PORT_END})\s* -> Record
+  ^\s+${ENTRY_TYPE}-object\s+${ENTRY_PROT}\s+source\s+(eq\s+${ENTRY_SRC_PORT_EQ}|gt\s+${ENTRY_SRC_PORT_GT}|lt\s+${ENTRY_SRC_PORT_LT}|range\s+${ENTRY_SRC_PORT_START}\s+${ENTRY_SRC_PORT_END})\s* -> Record
+  ^\s+${ENTRY_TYPE}-object\s+${ENTRY_PROT}\s+destination\s+(eq\s+${ENTRY_DST_PORT_EQ}|gt\s+${ENTRY_DST_PORT_GT}|lt\s+${ENTRY_DST_PORT_LT}|range\s+${ENTRY_DST_PORT_START}\s+${ENTRY_DST_PORT_END})\s* -> Record
+  ^\s+${ENTRY_TYPE}-object(\s+eq\s+${ENTRY_PORT_EQ}|\s+range\s+${ENTRY_PORT_START}\s+${ENTRY_PORT_END}|\s+${ENTRY_GRP_NAME})\s* -> Record
+  ^. -> Error
+
+EOF
